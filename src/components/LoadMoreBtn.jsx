@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
-import styles from './LoadMoreBtn.module.css';
+import styles from '../components/LoadMoreBtn.module.css';
 
-const LoadMoreBtn = ({ onClick }) => (
-  <button className={styles.loadMore} onClick={onClick}>
-    Load more
-  </button>
-);
-
+export default function LoadMoreBtn({ onClick }) {
+  return (
+    <button className={styles.button} onClick={onClick}>
+      Load more
+    </button>
+  );
+}
 LoadMoreBtn.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
-
-export default LoadMoreBtn;

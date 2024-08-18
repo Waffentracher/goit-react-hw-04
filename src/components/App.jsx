@@ -1,76 +1,92 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import SearchBar from './SearchBar';
 import ImageGallery from './ImageGallery';
 import Loader from './Loader';
+import ErrorMessage from './ErrorMessage';
 import LoadMoreBtn from './LoadMoreBtn';
 import ImageModal from './ImageModal';
-import { fetchImages } from './api';
-import toast, { Toaster } from 'react-hot-toast';
 import styles from './App.module.css';
 
-const App = () => {
+const API_KEY = "JUxp1MPibBiw2RjxsmCYGolrkqsyIRYarXoAoqFNEKI";
+const BASE_URL = "https://api.unsplash.com/search/photos";
+
+export default function App() {
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (query === '') return;
 
-    const fetchGallery = async () => {
+    const fetchImages = async () => {
       setLoading(true);
+      setError(null);
+
       try {
-        const data = await fetchImages(query, page);
-        setImages((prevImages) => [...prevImages, ...data.results]);
-      } catch (error) {
-        setError(error.message);
-        toast.error('Failed to fetch images.');
+        const response = await axios.get(BASE_URL, {
+          params: {
+            query,
+            page,
+            per_page: 12,
+            client_id: API_KEY,
+          },
+        });
+
+        if (response.data.results.length === 0) {
+          setError('No images found. Please try a different search.');
+        } else {
+          setImages(prev => [...prev, ...response.data.results]);
+        }
+      } catch {
+        setError('Failed to fetch images. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchGallery();
+    fetchImages();
   }, [query, page]);
 
-  const handleSearch = (newQuery) => {
+  const handleSearchSubmit = (newQuery) => {
     setQuery(newQuery);
     setImages([]);
     setPage(1);
   };
 
-  const loadMoreImages = () => setPage((prevPage) => prevPage + 1);
-
-  const openModal = (image) => {
-    setSelectedImage(image);
-    setShowModal(true);
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+  };
+
+  const handleCloseModal = () => {
     setSelectedImage(null);
   };
 
   return (
     <div className={styles.app}>
-      <SearchBar onSubmit={handleSearch} />
-      <ImageGallery images={images} onImageClick={openModal} />
+      <SearchBar onSubmit={handleSearchSubmit} />
+      {error && <ErrorMessage message={error} />}
+      {images.length > 0 && (
+        <ImageGallery images={images} onClick={handleImageClick} />
+      )}
       {loading && <Loader />}
-      {images.length > 0 && !loading && <LoadMoreBtn onClick={loadMoreImages} />}
-      {showModal && (
+      {images.length > 0 && !loading && (
+        <LoadMoreBtn onClick={handleLoadMore} />
+      )}
+      {selectedImage && (
         <ImageModal
-          isOpen={showModal}
-          onClose={closeModal}
+          isOpen={!!selectedImage}
+          onClose={handleCloseModal}
           image={selectedImage}
         />
       )}
-      <Toaster />
-      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
-};
-
-export default App;
+}

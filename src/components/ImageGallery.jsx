@@ -1,18 +1,23 @@
 import PropTypes from 'prop-types';
 import styles from './ImageGallery.module.css';
-import ImageCard from './ImageCard';
 
-const ImageGallery = ({ images, onImageClick }) => {
-  return (
-    <ul className={styles.gallery}>
-      {images.map((image) => (
-        <li key={image.id} className={styles['gallery-item']}>
-          <ImageCard image={image} onClick={() => onImageClick(image)} />
-        </li>
-      ))}
-    </ul>
-  );
-};
+const ImageGallery = ({ images, onClick }) => (
+  <div className={styles.imageGallery}>
+    {images.map(image => (
+      <div
+        key={image.id}
+        className={styles.imageCard}
+        onClick={() => onClick(image)}
+      >
+        <img
+          src={image.urls.small}
+          alt={image.alt_description}
+          className={styles.image}
+        />
+      </div>
+    ))}
+  </div>
+);
 
 ImageGallery.propTypes = {
   images: PropTypes.arrayOf(
@@ -21,9 +26,10 @@ ImageGallery.propTypes = {
       urls: PropTypes.shape({
         small: PropTypes.string.isRequired,
       }).isRequired,
+      alt_description: PropTypes.string,
     })
   ).isRequired,
-  onImageClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default ImageGallery;

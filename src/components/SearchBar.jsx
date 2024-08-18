@@ -1,12 +1,11 @@
+// src/components/SearchBar/SearchBar.jsx
 import { useState } from 'react';
-import PropTypes from 'prop-types';
-import toast from 'react-hot-toast';
 import styles from './SearchBar.module.css';
+import toast from 'react-hot-toast';
+import PropTypes from 'prop-types';
 
-const SearchBar = ({ onSubmit }) => {
+export default function SearchBar({ onSubmit }) {
   const [query, setQuery] = useState('');
-
-  const handleInputChange = (e) => setQuery(e.target.value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,25 +18,21 @@ const SearchBar = ({ onSubmit }) => {
   };
 
   return (
-    <header className={styles.searchBar}>
+    <header className={styles.header}>
       <form className={styles.form} onSubmit={handleSubmit}>
         <input
           type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
           value={query}
-          onChange={handleInputChange}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search images and photos"
           className={styles.input}
         />
         <button type="submit" className={styles.button}>Search</button>
       </form>
     </header>
   );
-};
+}
 
 SearchBar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
-
-export default SearchBar;

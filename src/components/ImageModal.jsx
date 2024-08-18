@@ -1,40 +1,25 @@
 import PropTypes from 'prop-types';
-import Modal from 'react-modal';
+import styles from './ImageModal.module.css';
 
-const ImageModal = ({ isOpen, onClose, image }) => {
+export default function ImageModal({ isOpen, onClose, image }) {
+  if (!isOpen) return null;
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      contentLabel="Image Modal"
-      ariaHideApp={false}
-      style={{
-        overlay: { backgroundColor: 'rgba(0, 0, 0, 0.75)' },
-        content: { 
-          top: '50%', 
-          left: '50%', 
-          right: 'auto', 
-          bottom: 'auto', 
-          marginRight: '-50%', 
-          transform: 'translate(-50%, -50%)',
-          maxWidth: '90%',
-          maxHeight: '90%',
-          padding: '0',
-          border: 'none',
-          borderRadius: '10px',
-          overflow: 'hidden',
-        },
-      }}
-    >
-      <img src={image.urls.regular} alt={image.alt_description} style={{ width: '100%', height: 'auto' }} />
-    </Modal>
+    <div className={styles.modal} onClick={onClose}>
+      <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+        <img src={image.urls.regular} alt={image.alt_description} className={styles.modalImage} />
+      </div>
+    </div>
   );
-};
+}
 
 ImageModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  image: PropTypes.object.isRequired,
+  image: PropTypes.shape({
+    urls: PropTypes.shape({
+      regular: PropTypes.string.isRequired,
+    }).isRequired,
+    alt_description: PropTypes.string,
+  }).isRequired,
 };
-
-export default ImageModal;
