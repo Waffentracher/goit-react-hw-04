@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import SearchBar from './SearchBar';
-import ImageGallery from './ImageGallery';
-import Loader from './Loader';
-import ErrorMessage from './ErrorMessage';
-import LoadMoreBtn from './LoadMoreBtn';
-import ImageModal from './ImageModal';
+import SearchBar from './SearchBar/SearchBar';
+import ImageGallery from './ImageGallery/ImageGallery';
+import Loader from './Loader/Loader';
+import ErrorMessage from './ErrorMessage/ErrorMessage';
+import LoadMoreBtn from './LoadMoreButton/LoadMoreBtn';
+import ImageModal from './ImageModal/ImageModal';
 import styles from './App.module.css';
 
 const API_KEY = "JUxp1MPibBiw2RjxsmCYGolrkqsyIRYarXoAoqFNEKI";

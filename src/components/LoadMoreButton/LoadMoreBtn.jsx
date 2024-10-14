@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from '../components/LoadMoreBtn.module.css';
+import styles from '../LoadMoreButton/LoadMoreBtn.module.css';
 
 export default function LoadMoreBtn({ onClick }) {
   return (
